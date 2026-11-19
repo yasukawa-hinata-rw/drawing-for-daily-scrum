@@ -2,7 +2,6 @@
 const results = [
   "スゥ",
   "まてぅもと",
-  "黒川様",
   "たぬきち",
   "李",
   "みねやま",
@@ -447,4 +446,3 @@ function getResult() {
 
 // グローバルから呼べるように（onclick用）
 window.startRoulette = startRoulette;
-
