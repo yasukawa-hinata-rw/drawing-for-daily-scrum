@@ -1,12 +1,12 @@
 // くじ引き結果
-const results = [
-  "スゥ",
-  "まてぅもと",
-  "たぬきち",
-  "李",
-  "みねやま",
-  "かねこ",
-  "安☆川"
+const participants = [
+  { name: "スゥ", occupation: "other" },
+  { name: "まてぅもと", occupation: "engineer" },
+  { name: "たぬきち", occupation: "other" },
+  { name: "李", occupation: "engineer" },
+  { name: "みねやま", occupation: "engineer" },
+  { name: "かねこ", occupation: "other" },
+  { name: "安☆川", occupation: "engineer" }
 ];
 
 const EFFECTS = {
@@ -62,7 +62,7 @@ function renderParticipants() {
   if (!root) return;
   root.innerHTML = "";
 
-  results.forEach((name, idx) => {
+  participants.forEach(({ name, occupation }, idx) => {
     const id = `p_${idx}`;
 
     const label = document.createElement("label");
@@ -75,6 +75,7 @@ function renderParticipants() {
     input.type = "checkbox";
     input.checked = true;
     input.dataset.name = name;
+    input.dataset.occupation = occupation;
 
     const span = document.createElement("span");
     span.textContent = name;
@@ -92,26 +93,34 @@ function renderParticipants() {
 }
 
 function bindParticipantButtons() {
+  const btnEngineers = qs("#selectEngineers");
   const btnAll = qs("#selectAll");
   const btnNone = qs("#selectNone");
 
+  if (btnEngineers) {
+    btnEngineers.addEventListener("click", () => {
+      setParticipantSelection((input) => input.dataset.occupation === "engineer");
+    });
+  }
+
   if (btnAll) {
     btnAll.addEventListener("click", () => {
-      qsa('#participants input[type="checkbox"]').forEach((input) => {
-        input.checked = true;
-        input.dispatchEvent(new Event("change"));
-      });
+      setParticipantSelection(() => true);
     });
   }
 
   if (btnNone) {
     btnNone.addEventListener("click", () => {
-      qsa('#participants input[type="checkbox"]').forEach((input) => {
-        input.checked = false;
-        input.dispatchEvent(new Event("change"));
-      });
+      setParticipantSelection(() => false);
     });
   }
+}
+
+function setParticipantSelection(shouldSelect) {
+  qsa('#participants input[type="checkbox"]').forEach((input) => {
+    input.checked = shouldSelect(input);
+    input.dispatchEvent(new Event("change"));
+  });
 }
 
 function updateSelectedCount() {
